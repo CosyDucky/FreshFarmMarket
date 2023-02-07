@@ -1,0 +1,122 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>@ViewData["Title"]</h1>
+<head runat="server">
+    <script type="text/javascript">
+function validate() {
+    var str = document.getElementById('<%=tb_password.ClientID %>').value;
+
+    if (str.length < 12) {
+        document.getElementById("lbl_pwdchecker").innerHTML = "Password Length must be at least 12 characters";
+        document.getElementById("lbl_pwdchecker").style.color = "Red";
+        return ("too_short")
+    }
+    else if (str.search(/[0-9]/) == -1){
+        document.getElementById("lbl_pwdchecker").innerHTML = "Password must contain at least 1 number";
+        document.getElementById("lbl_pwdchecker").style.color = "Red";
+        return ("no_number")
+    } else if (str.search(/[A-Z]/) == -1){
+        document.getElementById("lbl_pwdchecker").innerHTML = "Password must contain at least 1 Uppercase letter";
+        document.getElementById("lbl_pwdchecker").style.color = "Red";
+        return ("no_upper_case")
+
+    document.getElementById("lbl_pwdchecker")).innerHTML = "Excellent";
+    document.getElementById("lbl_pwdchecker")).style.color = "Blue";
+
+}
+
+        </script>
+
+</head>
+<div class="row">
+    <div class="col-md-4">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" runat="server">
+            <h2>Create a new account.</h2>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-floating">
+                <input asp-for="Input.FullName" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="Input.FullName"></label>
+                <span asp-validation-for="Input.FullName" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating">
+                <input type="number" asp-for="Input.CreditCardNo" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="Input.CreditCardNo"></label>
+                <span asp-validation-for="Input.CreditCardNo" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating">
+                <input asp-for="Input.Gender" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="Input.Gender"></label>
+                <span asp-validation-for="Input.Gender" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating">
+                <input type="tel" asp-for="Input.PhoneNumber" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="Input.PhoneNumber"></label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating">
+                <input asp-for="Input.DeliveryAddress" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="Input.DeliveryAddress"></label>
+                <span asp-validation-for="Input.DeliveryAddress" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="Input.Email"></label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating">
+                <asp:textarea id="tb_password" runat="server" width= "200px" onkeyup="javascript:validate()"></asp:textarea>
+                <input id="tb_password" asp-for="Input.Password" class="form-control" runat="server" autocomplete="new-password" aria-required="true" onkeyup="javascript:validate()" />
+                <label asp-for="Input.Password"></label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <label id="lbl_pwdchecker"></label>
+            </div>
+
+            <div class="form-floating">
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="Input.ConfirmPassword"></label>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input  type="file" asp-for="Input.Photo" class="form-control" autocomplete="new-password" aria-required="true"  onchange="showImgPreview(this)" />
+                <label asp-for="Input.Photo"></label>
+                <span asp-validation-for="Input.Photo" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating">
+                <input asp-for="Input.AboutMe" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="Input.AboutMe"></label>
+                <span asp-validation-for="Input.AboutMe" class="text-danger"></span>
+            </div>
+
+
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+        </form>
+        <script>
+					function showImgPreview(input) {
+						if (input.files[0]) {
+							var uploadimg = new FileReader();
+							uploadimg.onload = function(displayimg) {
+								$("#imgPreview").attr('src', displayimg.target.result);
+							}
+							uploadimg.readAsDataURL(input.files[0]);
+						}
+					}
+			</script>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

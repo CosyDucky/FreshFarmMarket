@@ -1,0 +1,39 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+@using Microsoft.AspNetCore.Identity
+@using FreshFarmMarket.Areas.Identity.Data
+@inject SignInManager<FreshFarmMarketUser> SignInManager
+@inject UserManager<FreshFarmMarketUser> UserManager
+@{
+    var usr = await UserManager.GetUserAsync(User);
+    var fullName = usr?.FullName;
+    var creditCardNo = usr?.CreditCardNo;
+    var gender = usr?.Gender;
+    var deliveryAddress = usr?.DeliveryAddress;
+    var email = usr?.Email;
+    var photo = usr?.Photo;
+    var aboutMe = usr?.AboutMe;
+    var phoneNumber = usr?.PhoneNumber;
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <p>Full Name ->@fullName</p>
+        <p>Credit Card No ->@creditCardNo</p>
+        <p>Gender ->@gender</p>
+        <p>Mobile No ->@phoneNumber</p>
+        <p>Delivery Address ->@deliveryAddress</p>
+        <p>Email Address Registered ->@email</p>
+        <p>Photo ->@photo</p>
+        <p>About Me ->@aboutMe</p>
+    }
+else{
+    <p>Welcome to Fresh Farm Market!</p>
+}
+</div>
