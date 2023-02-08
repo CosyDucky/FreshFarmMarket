@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using System.Drawing;
+using System.Security.Cryptography;
 
 namespace FreshFarmMarket.Areas.Identity.Pages.Account
 {
@@ -61,7 +62,6 @@ namespace FreshFarmMarket.Areas.Identity.Pages.Account
         public string ReturnUrl { get; set; }
 
 
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
 
         public class InputModel
@@ -118,13 +118,34 @@ namespace FreshFarmMarket.Areas.Identity.Pages.Account
             [DataType(DataType.Text)]
             [Display(Name = "AboutMe")]
             public string AboutMe { get; set; } = string.Empty;
+            
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
         }
-
+        public string DecryptString(string encrString)
+        {
+            byte[] b;
+            string decrypted;
+            try
+            {
+                b = Convert.FromBase64String(encrString);
+                decrypted = System.Text.ASCIIEncoding.ASCII.GetString(b);
+            }
+            catch (FormatException fe)
+            {
+                decrypted = "";
+            }
+            return decrypted;
+        }
+        public string EnryptString(string strEncrypted)
+        {
+            byte[] b = System.Text.ASCIIEncoding.ASCII.GetBytes(strEncrypted);
+            string encrypted = Convert.ToBase64String(b);
+            return encrypted;
+        }
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -152,7 +173,7 @@ namespace FreshFarmMarket.Areas.Identity.Pages.Account
                 var user = CreateUser();
 
                 user.FullName = Input.FullName;
-                user.CreditCardNo = Input.CreditCardNo;
+                user.CreditCardNo = this.EnryptString(Input.CreditCardNo);
                 user.Gender = Input.Gender;
                 user.PhoneNumber = Input.PhoneNumber;
                 user.DeliveryAddress = Input.DeliveryAddress;
@@ -166,36 +187,16 @@ namespace FreshFarmMarket.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-
                     var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
-            // If we got this far, something failed, redisplay form
             return Page();
         }
 
