@@ -7,35 +7,34 @@
 <h1>@ViewData["Title"]</h1>
 <head runat="server">
     <script type="text/javascript">
-function validate() {
-    var str = document.getElementById('<%=tb_password.ClientID %>').value;
+        function validate() {
+            var str = document.getElementById('<%=tb_password.ClientID %>').value;
 
-    if (str.length < 12) {
-        document.getElementById("lbl_pwdchecker").innerHTML = "Password Length must be at least 12 characters";
-        document.getElementById("lbl_pwdchecker").style.color = "Red";
-        return ("too_short")
-    }
-    else if (str.search(/[0-9]/) == -1) {
-        document.getElementById("lbl_pwdchecker").innerHTML = "Password must contain at least 1 number";
-        document.getElementById("lbl_pwdchecker").style.color = "Red";
-        return ("no_number")
-    } else if (str.search(/[A-Z]/) == -1) {
-        document.getElementById("lbl_pwdchecker").innerHTML = "Password must contain at least 1 Uppercase letter";
-        document.getElementById("lbl_pwdchecker").style.color = "Red";
-        return ("no_upper_case")
+            if (str.length < 12) {
+                document.getElementById("lbl_pwdchecker").innerHTML = "Password Length must be at least 12 characters";
+                document.getElementById("lbl_pwdchecker").style.color = "Red";
+                return ("too_short")
+            }
+            else if (str.search(/[0-9]/) == -1) {
+                document.getElementById("lbl_pwdchecker").innerHTML = "Password must contain at least 1 number";
+                document.getElementById("lbl_pwdchecker").style.color = "Red";
+                return ("no_number")
+            } else if (str.search(/[A-Z]/) == -1) {
+                document.getElementById("lbl_pwdchecker").innerHTML = "Password must contain at least 1 Uppercase letter";
+                document.getElementById("lbl_pwdchecker").style.color = "Red";
+                return ("no_upper_case")
 
-        document.getElementById("lbl_pwdchecker")).innerHTML = "Excellent";
-        document.getElementById("lbl_pwdchecker")).style.color = "Blue";
+                document.getElementById("lbl_pwdchecker")).innerHTML = "Excellent";
+                document.getElementById("lbl_pwdchecker")).style.color = "Blue";
 
-    }
-}
+            }
+        }
 
-        </script>
-
+    </script>
 </head>
 <div class="row">
     <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" runat="server">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" runat="server" asp-antiforgery="true">
             <h2>Create a new account.</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -53,19 +52,19 @@ function validate() {
             </div>
 
             <div class="row mb-3">
-					<label class="col-sm-2 col-form-label" asp-for="Input.Gender"></label>
-					<div class="col-sm-10 d-flex align-items-center">
-						<div class="form-check form-check-inline">
-							@Html.RadioButtonFor(m => m.Input.Gender, "M", new {@class = "form-check-input"})
-							<label class="form-check-label">Male</label>
-						</div>
-						<div class="form-check form-check-inline">
-							@Html.RadioButtonFor(m => m.Input.Gender, "F", new {@class = "form-check-input"})
-							<label class="form-check-label">Female</label>
-						</div>
-						<span asp-validation-for="Input.Gender" class="text-danger"></span>
-					</div>
-				</div>
+                <label class="col-sm-2 col-form-label" asp-for="Input.Gender"></label>
+                <div class="col-sm-10 d-flex align-items-center">
+                    <div class="form-check form-check-inline">
+                        @Html.RadioButtonFor(m => m.Input.Gender, "M", new {@class = "form-check-input"})
+                        <label class="form-check-label">Male</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        @Html.RadioButtonFor(m => m.Input.Gender, "F", new {@class = "form-check-input"})
+                        <label class="form-check-label">Female</label>
+                    </div>
+                    <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                </div>
+            </div>
 
             <div class="form-floating">
                 <input type="tel" asp-for="Input.PhoneNumber" class="form-control" autocomplete="username" aria-required="true" />
@@ -86,11 +85,9 @@ function validate() {
             </div>
 
             <div class="form-floating">
-                <asp:textarea id="tb_password" runat="server" width= "200px" onkeyup="javascript:validate()"></asp:textarea>
-                <input id="tb_password" asp-for="Input.Password" class="form-control" runat="server" autocomplete="new-password" aria-required="true" onkeyup="javascript:validate()" />
+                <input id="tb_password" asp-for="Input.Password" class="form-control" runat="server" autocomplete="new-password" aria-required="true" />
                 <label asp-for="Input.Password"></label>
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
-                <label id="lbl_pwdchecker"></label>
             </div>
 
             <div class="form-floating">
@@ -99,7 +96,7 @@ function validate() {
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
             <div class="form-floating">
-                <input  type="file" asp-for="Input.Photo" class="form-control" autocomplete="new-password" aria-required="true"  onchange="showImgPreview(this)" />
+                <input type="file" asp-for="Input.Photo" class="form-control" autocomplete="new-password" aria-required="true" onchange="showImgPreview(this)" />
                 <label asp-for="Input.Photo"></label>
                 <span asp-validation-for="Input.Photo" class="text-danger"></span>
             </div>
@@ -110,29 +107,31 @@ function validate() {
                 <span asp-validation-for="Input.AboutMe" class="text-danger"></span>
             </div>
             <script src="https://www.google.com/recaptcha/api.js"></script>
- <script>
-   function onSubmit(token) {
-     document.getElementById("demo-form").submit();
-   }
- </script>
- <button class="g-recaptcha" 
-        data-sitekey="6LfaeFwkAAAAAIhJBl2D2UaA4M7n0g7r_c0JNlR-" 
-        data-callback='onSubmit' 
-        data-action='submit'>Submit</button>
+            <script>
+                function onSubmit(token) {
+                    document.getElementById("demo-form").submit();
+                }
+            </script>
+            <button class="g-recaptcha"
+                    data-sitekey="6LfaeFwkAAAAAIhJBl2D2UaA4M7n0g7r_c0JNlR-"
+                    data-callback='onSubmit'
+                    data-action='submit'>
+                Submit
+            </button>
 
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
         <script>
-					function showImgPreview(input) {
-						if (input.files[0]) {
-							var uploadimg = new FileReader();
-							uploadimg.onload = function(displayimg) {
-								$("#imgPreview").attr('src', displayimg.target.result);
-							}
-							uploadimg.readAsDataURL(input.files[0]);
-						}
-					}
-			</script>
+            function showImgPreview(input) {
+                if (input.files[0]) {
+                    var uploadimg = new FileReader();
+                    uploadimg.onload = function (displayimg) {
+                        $("#imgPreview").attr('src', displayimg.target.result);
+                    }
+                    uploadimg.readAsDataURL(input.files[0]);
+                }
+            }
+        </script>
     </div>
 </div>
 
