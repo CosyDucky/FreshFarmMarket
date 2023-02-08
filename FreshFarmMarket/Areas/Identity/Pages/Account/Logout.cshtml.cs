@@ -29,6 +29,8 @@ namespace FreshFarmMarket.Areas.Identity.Pages.Account
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+            session.Clear();
+            session.Remove(session.ToString());
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);
