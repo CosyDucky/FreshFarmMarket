@@ -24,10 +24,17 @@ namespace FreshFarmMarket.Areas.Identity.Pages.Account
             _logger = logger;
         }
 
-        public async Task<IActionResult> OnPost(string returnUrl = null)
+        public ISession GetSession(ISession session)
+        {
+            return session;
+        }
+
+        public async Task<IActionResult> OnPost(ISession session, string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
+            session.Clear();
+            session.Remove(session.ToString());
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);

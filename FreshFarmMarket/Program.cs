@@ -27,11 +27,14 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddDistributedMemoryCache(); //save session in memory
+builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromSeconds(30);
+    options.Cookie.Name = ".User.Session";
+    options.IdleTimeout = TimeSpan.FromSeconds(20);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 
 var app = builder.Build();

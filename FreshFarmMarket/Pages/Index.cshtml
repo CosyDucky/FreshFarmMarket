@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Home page";
 }
+
+@inject IHttpContextAccessor contxt;
 @using Microsoft.AspNetCore.Identity
 @using FreshFarmMarket.Areas.Identity.Data
 @inject SignInManager<FreshFarmMarketUser> SignInManager
@@ -21,7 +23,7 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+   
     @if (SignInManager.IsSignedIn(User))
     {
         <p>Full Name ->@fullName</p>

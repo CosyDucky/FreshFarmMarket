@@ -15,5 +15,12 @@ namespace FreshFarmMarket.Controllers
             contxt.HttpContext.Session.SetInt32("StudentId", 50);
             return View();
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Register(IFormCollection fc)
+        {
+            string res = fc["txtname"];
+            return View();
+        }
     }
 }
